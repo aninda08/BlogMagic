@@ -6,14 +6,26 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Context } from '../context/BlogContext';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const IndexScreens = () => {
-  const { state, addBlogPost, deleteBlogPost } = useContext(Context);
+  const { state, getBlogPosts, deleteBlogPost } = useContext(Context);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    getBlogPosts();
+
+    const listener = navigation.addListener('focus', () => {
+      getBlogPosts();
+    });
+
+    return () => {
+      listener.remove();
+    };
+  }, []);
   return (
     <View>
       <FlatList
